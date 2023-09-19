@@ -1,6 +1,12 @@
 import sys
-
 import win32com.client as win32
+
+"""
+python kraken.py <project_path> <export_path>
+    dump-forms
+    dump-form <form_name>
+    load-form <form_name>
+"""
 
 project = win32.gencache.EnsureDispatch('Access.Application')
 project.Application.OpenCurrentDatabase(sys.argv[1])
