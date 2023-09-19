@@ -3,19 +3,19 @@ import sys
 import win32com.client as win32
 
 project = win32.gencache.EnsureDispatch('Access.Application')
-project.Application.OpenCurrentDatabase("E:\Documents\Database2.accdb")
+project.Application.OpenCurrentDatabase(sys.argv[1])
 
 currentProject = project.Application.CurrentProject
 currentData = project.Application.CurrentData
 
-exportPath = sys.argv[1]
+exportPath = sys.argv[2]
 
 def dumpForm(formName):
     project.DoCmd.OpenForm(formName)
     project.Application.SaveAsText(2, formName, exportPath + "\export_" + formName + ".txt")
     project.DoCmd.Close(2, formName)
 
-match sys.argv[2]:
+match sys.argv[3]:
     case "dump-forms":
         allForms = currentProject.AllForms
         formNames = []
@@ -25,6 +25,10 @@ match sys.argv[2]:
             dumpForm(formName)
 
     case "dump-form":
-        dumpForm(sys.argv[3])
-
+        dumpForm(sys.argv[4])
+    
+    case "load-form":
+        formName = sys.argv[4]
+        project.Application.LoadFromText(2, formName, exportPath + "\export_" + formName + ".txt")
+    
 project.Application.Quit()
