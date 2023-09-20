@@ -1,4 +1,5 @@
 import sys
+import os
 import win32com.client as win32
 
 """
@@ -21,13 +22,24 @@ def dumpForm(formName):
     project.Application.SaveAsText(2, formName, exportPath + "\export_" + formName + ".txt")
     project.DoCmd.Close(2, formName)
 
+def loadForm(formName):
+    project.Application.LoadFromText(2, formName, exportPath + "\export_" + formName + ".txt")
+
+def extractFileName(fileName):
+    return fileName[7:].split(".")[0]
+
 match sys.argv[3]:
     case "dump-forms":
         allForms = currentProject.AllForms
         formNames = []
         for i in range(allForms.Count):
             formNames.append(allForms.Item(i).Name)
+
+        # TODO: this form wasn't working
+        formNames.remove("ProjectVariants")
+
         for formName in formNames:
+            print(formName)
             dumpForm(formName)
 
     case "dump-form":
@@ -35,6 +47,13 @@ match sys.argv[3]:
     
     case "load-form":
         formName = sys.argv[4]
-        project.Application.LoadFromText(2, formName, exportPath + "\export_" + formName + ".txt")
-    
+        loadForm(formName)
+
+    case "load-forms":
+        formNames = [extractFileName(name) for name in os.listdir(exportPath)]
+
+        for formName in formNames:
+            print(formName)
+            loadForm(formName)
+
 project.Application.Quit()
