@@ -46,8 +46,7 @@ match sys.argv[3]:
         dumpForm(sys.argv[4])
     
     case "load-form":
-        formName = sys.argv[4]
-        loadForm(formName)
+        loadForm(sys.argv[4])
 
     case "load-forms":
         formNames = [extractFileName(name) for name in os.listdir(exportPath)]
