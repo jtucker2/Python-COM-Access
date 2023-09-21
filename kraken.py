@@ -7,6 +7,7 @@ python kraken.py <project_path> <export_path>
     dump-forms
     dump-form <form_name>
     load-form <form_name>
+    load-forms
 """
 
 project = win32.gencache.EnsureDispatch('Access.Application')
