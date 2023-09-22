@@ -74,11 +74,6 @@ def dumpAllQueries():
     for i in range(allQueries.Count):
         queryNames.append(allQueries.Item(i).Name)
     
-    queryNames.remove("Find_UsedControlStrategies")
-    queryNames.remove("Find_UsedValidationPatterns")
-    # The specified field 'Threat.masked' could refer to more than one table listed in the FROM clause of your SQL statement.
-    queryNames.remove("FindThreatEffectsNotAtTarget")
-    
     count = 0
     for queryName in queryNames:
         print(str(count) + "/" + str(len(queryNames)), end = "\r")
