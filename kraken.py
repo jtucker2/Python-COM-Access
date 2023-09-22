@@ -31,6 +31,17 @@ def dumpModule(moduleName):
     project.Application.SaveAsText(5, moduleName, exportPath + "\\" + moduleName + ".bas")
     project.DoCmd.Close(5, moduleName)
 
+def dumpQuery(queryName):
+    dbName = project.DBEngine.Workspaces(0).Databases(0).Name
+    try:
+        queryString = project.DBEngine.Workspaces(0).OpenDatabase(dbName).QueryDefs(queryName).SQL
+        path = os.path.join(exportPath, queryName + ".sql")
+        f = open(path, "w")
+        f.write(queryString)
+        f.close()
+    except:
+        print("Error", queryName)
+
 def extractFileName(fileName):
     return fileName.split(".")[0]
 
@@ -57,7 +68,27 @@ def dumpAllModules():
         print(moduleName)
         dumpModule(moduleName)
 
+def dumpAllQueries():
+    allQueries = currentData.AllQueries
+    queryNames = []
+    for i in range(allQueries.Count):
+        queryNames.append(allQueries.Item(i).Name)
+    
+    queryNames.remove("Find_UsedControlStrategies")
+    queryNames.remove("Find_UsedValidationPatterns")
+    # The specified field 'Threat.masked' could refer to more than one table listed in the FROM clause of your SQL statement.
+    queryNames.remove("FindThreatEffectsNotAtTarget")
+    
+    count = 0
+    for queryName in queryNames:
+        print(str(count) + "/" + str(len(queryNames)), end = "\r")
+        dumpQuery(queryName)
+        count += 1
+
 match sys.argv[3]:
+    case "dump-all":
+        dumpAllForms()
+        dumpAllModules()
     case "dump-forms":
         dumpAllForms()
     case "dump-form":
@@ -73,8 +104,9 @@ match sys.argv[3]:
     
     case "dump-modules":
         dumpAllModules()
-    case "dump-all":
-        dumpAllForms()
-        dumpAllModules()
+    case "dump-queries":
+        dumpAllQueries()
+    case "dump-query":
+        dumpQuery(sys.argv[4])
 
 project.Application.Quit()
