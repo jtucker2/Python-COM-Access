@@ -18,18 +18,27 @@ currentData = project.Application.CurrentData
 
 exportPath = sys.argv[2]
 
-def dumpForm(formName):
-    project.DoCmd.OpenForm(formName)
-    project.Application.SaveAsText(2, formName, exportPath + "\\" + formName + ".frm")
-    project.DoCmd.Close(2, formName)
+def removExtension(fileName):
+    return fileName.split(".")[0]
 
-def loadForm(formName):\
-    project.Application.LoadFromText(2, formName, exportPath + "\\" + formName + ".frm")
+def dumpForm(formName):
+    try:
+        project.DoCmd.OpenForm(formName)
+        project.Application.SaveAsText(2, formName, os.path.join(exportPath, formName + ".frm"))
+        project.DoCmd.Close(2, formName)
+    except:
+        print("Form error", formName)
+
+def loadForm(formName):
+    project.Application.LoadFromText(2, formName, os.path.join(exportPath, formName + ".frm"))
 
 def dumpModule(moduleName):
-    project.DoCmd.OpenModule(moduleName)
-    project.Application.SaveAsText(5, moduleName, exportPath + "\\" + moduleName + ".bas")
-    project.DoCmd.Close(5, moduleName)
+    try:
+        project.DoCmd.OpenModule(moduleName)
+        project.Application.SaveAsText(5, moduleName, os.path.join(exportPath, moduleName + ".bas"))
+        project.DoCmd.Close(5, moduleName)
+    except:
+        print("Module error", moduleName)
 
 def dumpQuery(queryName):
     dbName = project.DBEngine.Workspaces(0).Databases(0).Name
@@ -40,10 +49,7 @@ def dumpQuery(queryName):
         f.write(queryString)
         f.close()
     except:
-        print("Error", queryName)
-
-def extractFileName(fileName):
-    return fileName.split(".")[0]
+        print("Query error", queryName)
 
 def dumpAllForms():
     allForms = currentProject.AllForms
@@ -51,12 +57,19 @@ def dumpAllForms():
     for i in range(allForms.Count):
         formNames.append(allForms.Item(i).Name)
 
-    # TODO: this form wasn't working
-    formNames.remove("ProjectVariants")
+    count = 1
+    for formName in formNames:
+        print(str(count) + "/" + str(len(formNames)) + " forms", end = "\r")
+        dumpForm(formName)
+        count += 1
+    print()
+
+def loadAllForms():
+    formNames = [removExtension(name) for name in os.listdir(exportPath)]
 
     for formName in formNames:
         print(formName)
-        dumpForm(formName)
+        loadForm(formName)
 
 def dumpAllModules():
     allModules = currentProject.AllModules
@@ -64,9 +77,12 @@ def dumpAllModules():
     for i in range(allModules.Count):
         moduleNames.append(allModules.Item(i).Name)
 
+    count = 1
     for moduleName in moduleNames:
-        print(moduleName)
+        print(str(count) + "/" + str(len(moduleNames)) + " modules", end = "\r")
         dumpModule(moduleName)
+        count += 1
+    print()
 
 def dumpAllQueries():
     allQueries = currentData.AllQueries
@@ -74,34 +90,35 @@ def dumpAllQueries():
     for i in range(allQueries.Count):
         queryNames.append(allQueries.Item(i).Name)
     
-    count = 0
+    count = 1
     for queryName in queryNames:
-        print(str(count) + "/" + str(len(queryNames)), end = "\r")
+        print(str(count) + "/" + str(len(queryNames)) + " queries", end = "\r")
         dumpQuery(queryName)
         count += 1
+    print()
 
 match sys.argv[3]:
     case "dump-all":
         dumpAllForms()
         dumpAllModules()
-    case "dump-forms":
-        dumpAllForms()
+        dumpAllQueries()
+
     case "dump-form":
         dumpForm(sys.argv[4])
     case "load-form":
         loadForm(sys.argv[4])
-    case "load-forms":
-        formNames = [extractFileName(name) for name in os.listdir(exportPath)]
+    case "dump-module":
+        dumpModule(sys.argv[4])
+    case "dump-query":
+        dumpQuery(sys.argv[4])
 
-        for formName in formNames:
-            print(formName)
-            loadForm(formName)
-    
+    case "dump-forms":
+        dumpAllForms()
+    case "load-forms":
+        loadAllForms()
     case "dump-modules":
         dumpAllModules()
     case "dump-queries":
         dumpAllQueries()
-    case "dump-query":
-        dumpQuery(sys.argv[4])
 
 project.Application.Quit()
