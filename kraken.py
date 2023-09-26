@@ -138,12 +138,15 @@ def dumpTable(tableName):
     cursor = conn.cursor()
     cursor.execute("select * from " + tableName)
 
-    print("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
+    path = os.path.join(exportPath, "database-schema.sql")
+    f = open(path, "a")
+    f.write("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName) + "\n")
+    f.close()
     
     con = sqlite3.connect("DomainModel.db", isolation_level=None)
     cur = con.cursor()
     cur.execute("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
-
+    
     for row in cursor:
         row = rowString(row)
         # print("INSERT INTO " + tableName + " VALUES " + row)
