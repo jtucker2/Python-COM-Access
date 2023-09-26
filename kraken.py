@@ -15,6 +15,9 @@ currentData = project.Application.CurrentData
 
 exportPath = sys.argv[2]
 
+if os.path.exists("DomainModel.db"):
+  os.remove("DomainModel.db")
+
 def removExtension(fileName):
     return fileName.split(".")[0]
 
@@ -97,9 +100,6 @@ def dumpAllQueries():
         count += 1
     print()
 
-def getFields(cursor):
-    return [field[0] for field in cursor.description]
-
 def fieldsString(fields):
     s = str(fields)
     s = s.replace("[", "(")
@@ -110,16 +110,39 @@ def fieldsString(fields):
 def rowString(row):
     return str(row).replace("None", "NULL")
 
+def decode_sketchy_utf16(raw_bytes):
+    s = raw_bytes.decode("utf-16le", "ignore")
+    try:
+        n = s.index('\x00')
+        s = s[:n]
+    except ValueError:
+        pass
+    return s
+
+def getFieldsAndTypes(cursor, tableName):
+    fieldsList = []
+    typesList = []
+    for row in cursor.columns(table=tableName):
+        fieldsList.append(row.column_name)
+        typesList.append(row.type_name)
+
+    s = "("
+    for i in range(len(fieldsList)):
+        s = s + fieldsList[i] + " " + typesList[i] + ", "
+    s = s[:-2] + ")"
+    return s
+
 def dumpTable(tableName):
+    conn.add_output_converter(pyodbc.SQL_WVARCHAR, decode_sketchy_utf16)
+
     cursor = conn.cursor()
     cursor.execute("select * from " + tableName)
 
-    fields = fieldsString(getFields(cursor))
-    print("CREATE TABLE " + tableName + fields)
+    print("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
     
     con = sqlite3.connect("DomainModel.db", isolation_level=None)
     cur = con.cursor()
-    cur.execute("CREATE TABLE " + tableName + fields)
+    cur.execute("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
 
     for row in cursor:
         row = rowString(row)
