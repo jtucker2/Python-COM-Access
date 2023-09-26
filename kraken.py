@@ -1,6 +1,9 @@
 import sys
 import os
+import traceback
 import win32com.client as win32
+import pyodbc
+import sqlite3
 
 """
 python kraken.py <project_path> <export_path>
@@ -9,6 +12,8 @@ python kraken.py <project_path> <export_path>
     load-form <form_name>
     load-forms
 """
+
+conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
 
 project = win32.gencache.EnsureDispatch('Access.Application')
 project.Application.OpenCurrentDatabase(sys.argv[1])
@@ -28,6 +33,7 @@ def dumpForm(formName):
         project.DoCmd.Close(2, formName)
     except:
         print("Form error", formName)
+        traceback.print_exc()
 
 def loadForm(formName):
     project.Application.LoadFromText(2, formName, os.path.join(exportPath, formName + ".frm"))
@@ -39,6 +45,7 @@ def dumpModule(moduleName):
         project.DoCmd.Close(5, moduleName)
     except:
         print("Module error", moduleName)
+        traceback.print_exc()
 
 def dumpQuery(queryName):
     dbName = project.DBEngine.Workspaces(0).Databases(0).Name
@@ -50,6 +57,7 @@ def dumpQuery(queryName):
         f.close()
     except:
         print("Query error", queryName)
+        traceback.print_exc()
 
 def dumpAllForms():
     allForms = currentProject.AllForms
@@ -97,6 +105,42 @@ def dumpAllQueries():
         count += 1
     print()
 
+def getFields(cursor):
+    return [field[0] for field in cursor.description]
+
+def fieldsString(fields):
+    s = str(fields)
+    s = s.replace("[", "(")
+    s = s.replace("]", ")")
+    s = s.replace("'", "")
+    return s
+
+def rowString(row):
+    return str(row).replace("None", "NULL")
+
+def dumpTable(tableName):
+    cursor = conn.cursor()
+    cursor.execute("select * from " + tableName)
+
+    fields = fieldsString(getFields(cursor))
+    print("CREATE TABLE " + tableName + fields)
+    
+    con = sqlite3.connect("DomainModel.db", isolation_level=None)
+    cur = con.cursor()
+    cur.execute("CREATE TABLE " + tableName + fields)
+
+    for row in cursor:
+        row = rowString(row)
+        # print("INSERT INTO " + tableName + " VALUES " + row)
+        cur.execute("INSERT INTO " + tableName + " VALUES " + row)
+
+def dumpTables():
+    cursor = conn.cursor()
+    # tables starting with _ not included because they werer causing errors and they don't have a csv file counterpart?
+    tables = [listing[2] for listing in cursor.tables(tableType='TABLE') if listing[2].startswith("_") == False]
+    for table in tables:
+        dumpTable(table)
+
 match sys.argv[3]:
     case "dump-all":
         dumpAllForms()
@@ -120,5 +164,10 @@ match sys.argv[3]:
         dumpAllModules()
     case "dump-queries":
         dumpAllQueries()
+    
+    case "dump-table":
+        dumpTable("ControlStrategy")
+    case "dump-tables":
+        dumpTables()
 
 project.Application.Quit()
