@@ -1,13 +1,13 @@
 To run kraken.py see below:
 ```
 python kraken.py <project_path> <export_path>
-    dump-form <form_name>
-    load-form <form_name>
-    dump-module <module_name>
-    dump-query <query_name>
-    dump-table <table_name>
+	dump-form <form_name>
+	load-form <form_name>
+	dump-module <module_name>
+	dump-query <query_name>
+	dump-table <table_name>
 
-    dump-forms
+	dump-forms
 	load-forms
 	dump-modules
 	dump-queries
