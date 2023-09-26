@@ -5,14 +5,6 @@ import win32com.client as win32
 import pyodbc
 import sqlite3
 
-"""
-python kraken.py <project_path> <export_path>
-    dump-forms
-    dump-form <form_name>
-    load-form <form_name>
-    load-forms
-"""
-
 conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
 
 project = win32.gencache.EnsureDispatch('Access.Application')
@@ -155,6 +147,8 @@ match sys.argv[3]:
         dumpModule(sys.argv[4])
     case "dump-query":
         dumpQuery(sys.argv[4])
+    case "dump-table":
+        dumpTable(sys.argv[4])
 
     case "dump-forms":
         dumpAllForms()
@@ -164,9 +158,6 @@ match sys.argv[3]:
         dumpAllModules()
     case "dump-queries":
         dumpAllQueries()
-    
-    case "dump-table":
-        dumpTable("ControlStrategy")
     case "dump-tables":
         dumpTables()
 
