@@ -134,9 +134,7 @@ def getFieldsAndTypes(cursor, tableName):
 
 def dumpTable(tableName):
     conn.add_output_converter(pyodbc.SQL_WVARCHAR, decode_sketchy_utf16)
-
     cursor = conn.cursor()
-    cursor.execute("select * from " + tableName)
 
     path = os.path.join(exportPath, "database-schema.sql")
     f = open(path, "a")
@@ -146,25 +144,35 @@ def dumpTable(tableName):
     con = sqlite3.connect("DomainModel.db", isolation_level=None)
     cur = con.cursor()
     cur.execute("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
-    
+
+    cursor.execute("select * from " + tableName)
+    path = os.path.join(exportPath, "table-contents.sql")
+    f = open(path, "a")
     for row in cursor:
         row = rowString(row)
-        # print("INSERT INTO " + tableName + " VALUES " + row)
         cur.execute("INSERT INTO " + tableName + " VALUES " + row)
+        f.write("INSERT INTO " + tableName + " VALUES " + row + "\n")
+    f.close()
 
 def dumpTables():
     cursor = conn.cursor()
     # tables starting with _ not included because they werer causing errors and they don't have a csv file counterpart?
     tables = [listing[2] for listing in cursor.tables(tableType='TABLE') if listing[2].startswith("_") == False]
+    
+    count = 1
     for table in tables:
+        print(str(count) + "/" + str(len(tables)) + " tables", end = "\r")
         dumpTable(table)
+        count += 1
+    print()
 
 match sys.argv[3]:
     case "dump-all":
         dumpAllForms()
         dumpAllModules()
         dumpAllQueries()
-
+        dumpTables()
+        
     case "dump-form":
         dumpForm(sys.argv[4])
     case "load-form":
