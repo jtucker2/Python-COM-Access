@@ -38,3 +38,5 @@ To change the type of data that is returned change the `(MsysObjects.Type)=1` pa
 | Reports | -32764 |
 | Macros | -32766 |
 | Modules | -32761 |
+
+Kraken may get stuck during a dump if Access is asking for input. Simply open Access and provide an input and kraken will continue.
