@@ -40,3 +40,9 @@ To change the type of data that is returned change the `(MsysObjects.Type)=1` pa
 | Modules | -32761 |
 
 Kraken may get stuck during a dump if Access is asking for input. Simply open Access and provide an input and kraken will continue.
+
+Process for dumping and loading:
+1. run dump-all
+1. run load-csvs and give the directory of the csvs
+1. dump the sqlite database into a file called data.sql
+1. run load-all
