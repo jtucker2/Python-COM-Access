@@ -4,6 +4,7 @@ import traceback
 import win32com.client as win32
 import pyodbc
 import sqlite3
+import pandas as pd
 
 conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
 
@@ -147,14 +148,14 @@ def dumpTable(tableName):
     cur = con.cursor()
     cur.execute("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
 
-    cursor.execute("select * from " + tableName)
-    path = os.path.join(exportPath, "table-contents.sql")
-    f = open(path, "a")
-    for row in cursor:
-        row = rowString(row)
-        cur.execute("INSERT INTO " + tableName + " VALUES " + row)
-        f.write("INSERT INTO " + tableName + " VALUES " + row + "\n")
-    f.close()
+    # cursor.execute("select * from " + tableName)
+    # path = os.path.join(exportPath, "table-contents.sql")
+    # f = open(path, "a")
+    # for row in cursor:
+    #     row = rowString(row)
+    #     # cur.execute("INSERT INTO " + tableName + " VALUES " + row)
+    #     f.write("INSERT INTO " + tableName + " VALUES " + row + "\n")
+    # f.close()
 
 def dumpTables():
     cursor = conn.cursor()
@@ -167,6 +168,20 @@ def dumpTables():
         dumpTable(table)
         count += 1
     print()
+
+def loadCSV(path, tableName):
+    con = sqlite3.connect("DomainModel.db", isolation_level=None)
+    csv = pd.read_csv(path)
+    csv.to_sql(tableName, con, if_exists='append', index = False)
+
+def loadCSVs(path):
+    files = os.listdir(path)
+    count = 1
+    for file in files:
+        print(str(count) + "/" + str(len(files)) + " tables", end = "\r")
+        loadCSV(os.path.join(path, file), file.split(".")[0])
+        count += 1
+    print()    
 
 match sys.argv[3]:
     case "dump-all":
@@ -196,5 +211,9 @@ match sys.argv[3]:
         dumpAllQueries()
     case "dump-tables":
         dumpTables()
+        loadCSVs(sys.argv[4])
+    
+    case "load-csvs":
+        loadCSVs(sys.argv[4])
 
 project.Application.Quit()
