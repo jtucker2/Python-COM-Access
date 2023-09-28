@@ -110,15 +110,6 @@ def fieldsString(fields):
 def rowString(row):
     return str(row).replace("None", "NULL")
 
-def decode_sketchy_utf16(raw_bytes):
-    s = raw_bytes.decode("utf-16le", "ignore")
-    try:
-        n = s.index('\x00')
-        s = s[:n]
-    except ValueError:
-        pass
-    return s
-
 def getFieldsAndTypes(cursor, tableName):
     fieldsList = []
     typesList = []
@@ -132,8 +123,19 @@ def getFieldsAndTypes(cursor, tableName):
     s = s[:-2] + ")"
     return s
 
+def decode_sketchy_utf16(raw_bytes):
+    s = raw_bytes.decode("utf-16le", "ignore")
+    try:
+        n = s.index('\x00')
+        s = s[:n]
+    except ValueError:
+        pass
+    return s
+
 def dumpTable(tableName):
+    # Converter added due to decode error - https://github.com/mkleehammer/pyodbc/issues/328#issuecomment-419655266
     conn.add_output_converter(pyodbc.SQL_WVARCHAR, decode_sketchy_utf16)
+
     cursor = conn.cursor()
 
     path = os.path.join(exportPath, "database-schema.sql")
@@ -156,7 +158,7 @@ def dumpTable(tableName):
 
 def dumpTables():
     cursor = conn.cursor()
-    # tables starting with _ not included because they werer causing errors and they don't have a csv file counterpart?
+    # tables starting with "_" not included because they were causing errors and they don't have a csv file counterpart?
     tables = [listing[2] for listing in cursor.tables(tableType='TABLE') if listing[2].startswith("_") == False]
     
     count = 1
