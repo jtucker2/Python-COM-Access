@@ -181,7 +181,14 @@ def loadCSVs(path):
         print(str(count) + "/" + str(len(files)) + " tables", end = "\r")
         loadCSV(os.path.join(path, file), file.split(".")[0])
         count += 1
-    print()    
+    print()
+
+def loadTables():
+    filePath = os.path.join("data.sql")
+    with open(filePath) as file:
+        for line in file:
+            if line.startswith("CREATE") or line.startswith("INSERT"):
+                project.DoCmd.RunSQL(line)
 
 match sys.argv[3]:
     case "dump-all":
@@ -215,5 +222,7 @@ match sys.argv[3]:
     
     case "load-csvs":
         loadCSVs(sys.argv[4])
+    case "load-tables":
+        loadTables()
 
 project.Application.Quit()
