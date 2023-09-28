@@ -14,9 +14,6 @@ currentData = project.Application.CurrentData
 
 exportPath = sys.argv[2]
 
-if os.path.exists("DomainModel.db"):
-  os.remove("DomainModel.db")
-
 def removExtension(fileName):
     return fileName.split(".")[0]
 
@@ -139,10 +136,10 @@ def dumpTable(tableName):
 
     cursor = conn.cursor()
 
-    path = os.path.join(exportPath, "database-schema.sql")
-    f = open(path, "a")
-    f.write("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName) + "\n")
-    f.close()
+    # path = os.path.join(exportPath, "database-schema.sql")
+    # f = open(path, "a")
+    # f.write("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName) + "\n")
+    # f.close()
     
     con = sqlite3.connect("DomainModel.db", isolation_level=None)
     cur = con.cursor()
@@ -180,7 +177,7 @@ def loadCSVs(path):
     files = os.listdir(path)
     count = 1
     for file in files:
-        print(str(count) + "/" + str(len(files)) + " tables", end = "\r")
+        print(str(count) + "/" + str(len(files)) + " tables", )
         loadCSV(os.path.join(path, file), file.split(".")[0])
         count += 1
     print()
@@ -188,9 +185,24 @@ def loadCSVs(path):
 def loadTables():
     filePath = os.path.join("data.sql")
     with open(filePath) as file:
+        lines = len(file.readlines())
+
+    with open(filePath) as file:
+        count = 1
         for line in file:
+            print("loading tables {}%".format(int(count/lines*100)), end = "\r")
             if line.startswith("CREATE") or line.startswith("INSERT"):
                 project.DoCmd.RunSQL(line)
+            count += 1
+
+def loadQueries():
+    files = os.listdir(exportPath)
+
+    for file in files:
+        if file.split(".")[1] == "sql":#
+            sql = open(os.path.join(exportPath, file),"r")
+            dbName = project.DBEngine.Workspaces(0).Databases(0).Name
+            project.DBEngine.Workspaces(0).OpenDatabase(dbName).CreateQueryDef(file.split(".")[0], sql.read())
 
 match sys.argv[3]:
     case "dump-all":
@@ -226,5 +238,12 @@ match sys.argv[3]:
         loadCSVs(sys.argv[4])
     case "load-tables":
         loadTables()
+    case "load-queries":
+        loadQueries()
+    
+    case "load-all":
+        loadTables()
+        loadQueries()
+        loadAllForms()
 
 project.Application.Quit()
