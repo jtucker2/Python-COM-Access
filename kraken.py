@@ -6,8 +6,6 @@ import pyodbc
 import sqlite3
 import pandas as pd
 
-conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
-
 project = win32.gencache.EnsureDispatch('Access.Application')
 project.Application.OpenCurrentDatabase(sys.argv[1])
 
@@ -69,11 +67,11 @@ def dumpAllForms():
     print()
 
 def loadAllForms():
-    formNames = [removExtension(name) for name in os.listdir(exportPath)]
+    formNames = os.listdir(exportPath)
 
     for formName in formNames:
-        print(formName)
-        loadForm(formName)
+        if formName.split(".")[1] == "frm":
+            loadForm(formName.split(".")[0])
 
 def dumpAllModules():
     allModules = currentProject.AllModules
@@ -134,6 +132,8 @@ def decode_sketchy_utf16(raw_bytes):
     return s
 
 def dumpTable(tableName):
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
+
     # Converter added due to decode error - https://github.com/mkleehammer/pyodbc/issues/328#issuecomment-419655266
     conn.add_output_converter(pyodbc.SQL_WVARCHAR, decode_sketchy_utf16)
 
@@ -158,6 +158,8 @@ def dumpTable(tableName):
     # f.close()
 
 def dumpTables():
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
+
     cursor = conn.cursor()
     # tables starting with "_" not included because they were causing errors and they don't have a csv file counterpart?
     tables = [listing[2] for listing in cursor.tables(tableType='TABLE') if listing[2].startswith("_") == False]
