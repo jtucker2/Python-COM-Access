@@ -13,7 +13,12 @@ python kraken.py <project_path> <export_path>
 	dump-queries
 	dump-tables
 
+	load-csvs <csvs_directory>
+	load-tables
+	load-queries
+
 	dump-all
+	load-all
 ```
 
 The contents of an MS Access database can be queried using the following SQL statement:
