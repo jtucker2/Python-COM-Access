@@ -21,6 +21,14 @@ python kraken.py <project_path> <export_path>
 	load-all
 ```
 
+Process for dumping and loading:
+1. run dump-all
+1. run load-csvs and give the directory of the csvs
+1. dump the sqlite database into a file called data.sql
+1. run load-all and give the directory of the empty access database
+
+Kraken may get stuck during a dump if Access is asking for input. Simply open Access and provide an input and kraken will continue.
+
 The contents of an MS Access database can be queried using the following SQL statement:
 
 ```
@@ -43,11 +51,3 @@ To change the type of data that is returned change the `(MsysObjects.Type)=1` pa
 | Reports | -32764 |
 | Macros | -32766 |
 | Modules | -32761 |
-
-Kraken may get stuck during a dump if Access is asking for input. Simply open Access and provide an input and kraken will continue.
-
-Process for dumping and loading:
-1. run dump-all
-1. run load-csvs and give the directory of the csvs
-1. dump the sqlite database into a file called data.sql
-1. run load-all and give the directory of the empty access database
