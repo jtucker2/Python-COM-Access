@@ -45,4 +45,4 @@ Process for dumping and loading:
 1. run dump-all
 1. run load-csvs and give the directory of the csvs
 1. dump the sqlite database into a file called data.sql
-1. run load-all
+1. run load-all and give the directory of the empty access database
