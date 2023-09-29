@@ -63,13 +63,6 @@ def dumpAllForms():
         count += 1
     print()
 
-def loadAllForms():
-    formNames = os.listdir(exportPath)
-
-    for formName in formNames:
-        if formName.split(".")[1] == "frm":
-            loadForm(formName.split(".")[0])
-
 def dumpAllModules():
     allModules = currentProject.AllModules
     moduleNames = []
@@ -194,23 +187,40 @@ def loadTables():
             if line.startswith("CREATE") or line.startswith("INSERT"):
                 project.DoCmd.RunSQL(line)
             count += 1
+    print()
 
 def loadQueries():
-    files = os.listdir(exportPath)
-
+    files = [file for file in os.listdir(exportPath) if file.split(".")[1] == "sql"] 
+    
+    count = 1
     for file in files:
-        if file.split(".")[1] == "sql":
-            sql = open(os.path.join(exportPath, file),"r")
-            dbName = project.DBEngine.Workspaces(0).Databases(0).Name
-            project.DBEngine.Workspaces(0).OpenDatabase(dbName).CreateQueryDef(file.split(".")[0], sql.read())
+        print("loading tables {}/{}".format(count, len(files)), end = "\r")
+        sql = open(os.path.join(exportPath, file),"r")
+        dbName = project.DBEngine.Workspaces(0).Databases(0).Name
+        project.DBEngine.Workspaces(0).OpenDatabase(dbName).CreateQueryDef(file.split(".")[0], sql.read())
+        count += 1
+    print()
+
+def loadForms():
+    formNames = [file for file in os.listdir(exportPath) if file.split(".")[1] == "frm"] 
+
+    count = 1
+    for formName in formNames:
+        print("loading forms {}/{}".format(count, len(formNames)), end = "\r")
+        loadForm(formName.split(".")[0])
+        count += 1
+    print()
 
 def loadModules():
-    files = os.listdir(exportPath)
+    files = [file for file in os.listdir(exportPath) if file.split(".")[1] == "bas"] 
 
+    count = 1
     for file in files:
-        if file.split(".")[1] == "bas":
-            moduleName = file.split(".")[0]
-            project.Application.LoadFromText (5, moduleName, os.path.join(exportPath, file))
+        print("loading modules {}/{}".format(count, len(files)), end = "\r")
+        moduleName = file.split(".")[0]
+        project.Application.LoadFromText(5, moduleName, os.path.join(exportPath, file))
+        count += 1
+    print()
 
 
 match sys.argv[3]:
@@ -234,7 +244,7 @@ match sys.argv[3]:
     case "dump-forms":
         dumpAllForms()
     case "load-forms":
-        loadAllForms()
+        loadForms()
     case "dump-modules":
         dumpAllModules()
     case "dump-queries":
@@ -255,7 +265,7 @@ match sys.argv[3]:
     case "load-all":
         loadTables()
         loadQueries()
-        loadAllForms()
+        loadForms()
         loadModules()
 
 project.Application.Quit()
