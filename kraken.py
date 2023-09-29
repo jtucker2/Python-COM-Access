@@ -204,6 +204,15 @@ def loadQueries():
             dbName = project.DBEngine.Workspaces(0).Databases(0).Name
             project.DBEngine.Workspaces(0).OpenDatabase(dbName).CreateQueryDef(file.split(".")[0], sql.read())
 
+def loadModules():
+    files = os.listdir(exportPath)
+
+    for file in files:
+        if file.split(".")[1] == "bas":
+            moduleName = file.split(".")[0]
+            project.Application.LoadFromText (5, moduleName, os.path.join(exportPath, file))
+
+
 match sys.argv[3]:
     case "dump-all":
         dumpAllForms()
@@ -240,10 +249,13 @@ match sys.argv[3]:
         loadTables()
     case "load-queries":
         loadQueries()
+    case "load-modules":
+        loadModules()
     
     case "load-all":
         loadTables()
         loadQueries()
         loadAllForms()
+        loadModules()
 
 project.Application.Quit()
