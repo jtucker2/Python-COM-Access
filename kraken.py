@@ -177,7 +177,7 @@ def loadCSVs(path):
     files = os.listdir(path)
     count = 1
     for file in files:
-        print(str(count) + "/" + str(len(files)) + " tables", )
+        print(str(count) + "/" + str(len(files)) + " tables", end= "\r")
         loadCSV(os.path.join(path, file), file.split(".")[0])
         count += 1
     print()
