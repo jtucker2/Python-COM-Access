@@ -58,7 +58,7 @@ def dumpAllForms():
 
     count = 1
     for formName in formNames:
-        print(str(count) + "/" + str(len(formNames)) + " forms", end = "\r")
+        print("{}/{} forms".format(count, len(formNames)), end= "\r")
         dumpForm(formName)
         count += 1
     print()
@@ -78,7 +78,7 @@ def dumpAllModules():
 
     count = 1
     for moduleName in moduleNames:
-        print(str(count) + "/" + str(len(moduleNames)) + " modules", end = "\r")
+        print("{}/{} modules".format(count, len(moduleNames)), end= "\r")
         dumpModule(moduleName)
         count += 1
     print()
@@ -91,7 +91,7 @@ def dumpAllQueries():
     
     count = 1
     for queryName in queryNames:
-        print(str(count) + "/" + str(len(queryNames)) + " queries", end = "\r")
+        print("{}/{} queries".format(count, len(queryNames)), end= "\r")
         dumpQuery(queryName)
         count += 1
     print()
@@ -163,7 +163,7 @@ def dumpTables():
     
     count = 1
     for table in tables:
-        print(str(count) + "/" + str(len(tables)) + " tables", end = "\r")
+        print("{}/{} tables".format(count, len(tables)), end= "\r")
         dumpTable(table)
         count += 1
     print()
@@ -177,7 +177,7 @@ def loadCSVs(path):
     files = os.listdir(path)
     count = 1
     for file in files:
-        print(str(count) + "/" + str(len(files)) + " tables", end= "\r")
+        print("{}/{} tables".format(count, len(files)), end= "\r")
         loadCSV(os.path.join(path, file), file.split(".")[0])
         count += 1
     print()
@@ -199,7 +199,7 @@ def loadQueries():
     files = os.listdir(exportPath)
 
     for file in files:
-        if file.split(".")[1] == "sql":#
+        if file.split(".")[1] == "sql":
             sql = open(os.path.join(exportPath, file),"r")
             dbName = project.DBEngine.Workspaces(0).Databases(0).Name
             project.DBEngine.Workspaces(0).OpenDatabase(dbName).CreateQueryDef(file.split(".")[0], sql.read())
