@@ -147,6 +147,9 @@ def dumpTable(tableName):
     #     f.write("INSERT INTO " + tableName + " VALUES " + row + "\n")
     # f.close()
 
+def dumpNavPane():
+    project.Application.ExportNavigationPane(os.path.join(exportPath, "nav_pane.xml"))
+
 def dumpTables():
     conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
 
@@ -222,6 +225,9 @@ def loadModules():
         count += 1
     print()
 
+def loadNavPane():
+    project.Application.ImportNavigationPane(os.path.join(exportPath, "nav_pane.xml"))
+
 
 match sys.argv[3]:
     case "dump-all":
@@ -240,6 +246,8 @@ match sys.argv[3]:
         dumpQuery(sys.argv[4])
     case "dump-table":
         dumpTable(sys.argv[4])
+    case "dump-nav-pane":
+        dumpNavPane()
 
     case "dump-forms":
         dumpAllForms()
@@ -260,6 +268,8 @@ match sys.argv[3]:
         loadQueries()
     case "load-modules":
         loadModules()
+    case "load-nav-pane":
+        loadNavPane()
     
     case "load-all":
         loadTables()
