@@ -108,7 +108,7 @@ def getFieldsAndTypes(cursor, tableName):
 
     s = "("
     for i in range(len(fieldsList)):
-        s = s + fieldsList[i] + " " + typesList[i] + ", "
+        s = s + "{field} {type}, ".format(field=fieldsList[i], type=typesList[i])
     s = s[:-2] + ")"
     return s
 
@@ -251,7 +251,6 @@ match sys.argv[3]:
         dumpAllQueries()
     case "dump-tables":
         dumpTables()
-        loadCSVs(sys.argv[4])
     
     case "load-csvs":
         loadCSVs(sys.argv[4])
