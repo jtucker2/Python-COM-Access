@@ -29,6 +29,8 @@ Process for dumping and loading:
 
 Kraken may get stuck during a dump if Access is asking for input. Simply open Access and provide an input and kraken will continue.
 
+If you get a `has no attribute 'CLSIDToClassMap'` error then delete the folder at `C:\Users\<my username>\AppData\Local\Temp\gen_py` (https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com)
+
 The contents of an MS Access database can be queried using the following SQL statement:
 
 ```
