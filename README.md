@@ -23,11 +23,10 @@ python kraken.py <project_path> <export_path>
 
 Process for dumping and loading:
 1. run `dump-all` (set the export path to a directory not containing kraken.py)
+	- Keep access in view and press enter any time a pop-up window appears
 1. run `load-csvs` and give the directory of the csvs
 1. dump the sqlite database DomainModel.db into a file called `data.sql` in the same directory as the sqlite database
 1. run `load-all` and give the directory of the empty access database
-
-Kraken may get stuck during a dump if Access is asking for input. Simply open Access and provide an input and kraken will continue.
 
 If you get a `has no attribute 'CLSIDToClassMap'` error then delete the folder at `C:\Users\<my username>\AppData\Local\Temp\gen_py` (https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com)
 
