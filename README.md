@@ -53,6 +53,7 @@ The following instructions are Windows specific, however it shouldn't be too dif
   		```
 
 ## Loading
+1. Create an empty Access project
 1. Run the load command and give the directory of the empty access project
 	
 	```
