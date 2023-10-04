@@ -22,13 +22,17 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 	```
 	pip install -r requirements.txt
 	```
+1. Get the domain model editor Access project (`DomainModeller - vX-X-X - Empty.accdb`) from sharepoint
 1. Dump the access project
 	
 	(set the export path to a directory not containing kraken.py)
 	```
-	python kraken.py <access_project_path> <export_path> dump-all
+	python kraken.py <access_project_file_path> <export_path> dump-all
 	```
 	Keep access in view and press enter any time a pop-up window appears
+
+	The specified export folder should be populated with .sql, .frm and .bas files
+1. Get the CSVs for the domain model by cloning https://github.com/Spyderisk/domain-network
 1. Load csv data
 	```
 	python kraken.py load-csvs <csv_path>
@@ -56,7 +60,7 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 1. Run the load command and give the directory of the empty access project
 	
 	```
-	python kraken.py <access_project_path> <export_path> load-all
+	python kraken.py <access_project_file_path> <export_path> load-all
 	```
 
 # All commands
