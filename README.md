@@ -1,3 +1,9 @@
+# Kraken
+
+Kraken is a tool to export elements of a Microsoft Access project in plain text. The exports can then be reimported.
+
+# Running the tool
+
 To run kraken.py see below:
 ```
 python kraken.py <project_path> <export_path>
