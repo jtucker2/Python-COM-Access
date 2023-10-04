@@ -32,7 +32,7 @@ The following instructions are Windows specific, however it shouldn't be too dif
 	Keep access in view and press enter any time a pop-up window appears
 1. Load csv data
 	```
-	python kraken.py <access_project_path> <export_path> export-csvs <csv_path>
+	python kraken.py <access_project_path> <export_path> load-csvs <csv_path>
 	```
 1. Dump the generated sqlite database (DomainModel.db)
 	1. Open the database
