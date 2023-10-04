@@ -38,6 +38,10 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 		```
 		.dump
 		```
+	1. Exit the databse
+		```
+  		.exit
+  		```
 
 ## Loading
 1. Run the load command and give the directory of the empty access project
