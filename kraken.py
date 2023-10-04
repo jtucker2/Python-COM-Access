@@ -197,7 +197,7 @@ def loadQueries():
     
     count = 1
     for file in files:
-        print("loading tables {}/{}".format(count, len(files)), end = "\r")
+        print("loading queries {}/{}".format(count, len(files)), end = "\r")
         sql = open(os.path.join(exportPath, file),"r")
         dbName = project.DBEngine.Workspaces(0).Databases(0).Name
         project.DBEngine.Workspaces(0).OpenDatabase(dbName).CreateQueryDef(file.split(".")[0], sql.read())
