@@ -4,7 +4,49 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 
 # Running the tool
 
-To run kraken.py see below:
+## Dumping
+1. Clone the repo
+1. (optional) activate the virtual environment
+	```
+	.\env\Scripts\activate.bat
+	```
+1. Install required libraries
+	```
+	pip install -r requirements.txt
+	```
+1. Dump the access project
+	
+	(set the export path to a directory not containing kraken.py)
+	```
+	python kraken.py <access_project_path> <export_path> dump-all
+	```
+	Keep access in view and press enter any time a pop-up window appears
+1. Load csv data
+	```
+	python kraken.py <access_project_path> <export_path> export-csvs <csv_path>
+	```
+1. Dump the generated sqlite database (DomainModel.db)
+	1. Open the database
+		```
+		sqlite3 DomainModel.db
+		```
+	1. Set the output file
+		```
+		.output data.sql
+		```
+	1. Dump the database
+		```
+		.dump
+		```
+
+## Loading
+1. Run the load command and give the directory of the empty access project
+	
+	```
+	python kraken.py <access_project_path> <export_path> load-all
+	```
+
+# All commands
 ```
 python kraken.py <project_path> <export_path>
 	dump-form <form_name>
@@ -27,13 +69,7 @@ python kraken.py <project_path> <export_path>
 	load-all
 ```
 
-Process for dumping and loading:
-1. run `dump-all` (set the export path to a directory not containing kraken.py)
-	- Keep access in view and press enter any time a pop-up window appears
-1. run `load-csvs` and give the directory of the csvs
-1. dump the sqlite database DomainModel.db into a file called `data.sql` in the same directory as the sqlite database
-1. run `load-all` and give the directory of the empty access database
-
+# Info
 If you get a `has no attribute 'CLSIDToClassMap'` error then delete the folder at `C:\Users\<my username>\AppData\Local\Temp\gen_py` (https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com)
 
 The contents of an MS Access database can be queried using the following SQL statement:
