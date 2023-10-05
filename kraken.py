@@ -150,6 +150,7 @@ def dumpTable(tableName):
 
     cursor = conn.cursor()
 
+    # Writing the schema to a file
     # path = os.path.join(exportPath, "database-schema.sql")
     # f = open(path, "a")
     # f.write("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName) + "\n")
@@ -159,6 +160,7 @@ def dumpTable(tableName):
     cur = con.cursor()
     cur.execute("CREATE TABLE " + tableName + getFieldsAndTypes(cursor, tableName))
 
+    # Inserting data into DomainModel.db directly from Access (and writing it to a separate file)
     # cursor.execute("select * from " + tableName)
     # path = os.path.join(exportPath, "table-contents.sql")
     # f = open(path, "a")
