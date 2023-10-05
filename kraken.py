@@ -31,9 +31,7 @@ exportPath = os.path.abspath(args.export_path)
 try:
    os.makedirs(exportPath)
 except FileExistsError:
-   if len(os.listdir(exportPath)) != 0:
-       print("Error - export path already contains files")
-       quit()
+   pass
 
 def removExtension(fileName):
     return fileName.split(".")[0]
@@ -238,6 +236,9 @@ def loadNavPane():
 
 match args.command:
     case "dump-all":
+        if len(os.listdir(exportPath)) != 0:
+            print("Error - export path already contains files")
+            quit()
         dumpAllForms()
         dumpAllModules()
         dumpAllQueries()
