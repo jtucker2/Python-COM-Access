@@ -4,17 +4,30 @@ import traceback
 import win32com.client as win32
 import pyodbc
 import sqlite3
-from pathlib import Path
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('command')
+parser.add_argument('project_path')
+parser.add_argument(
+    '-export_path', 
+    default="exports", 
+    help="The path for exporting/importing files."
+)
+parser.add_argument(
+    '-element_name', 
+    help="The name of an individual element to be exported."
+)
+args = parser.parse_args()
 
 project = win32.gencache.EnsureDispatch('Access.Application')
-# project.Application.OpenCurrentDatabase(sys.argv[1])
-project.Application.OpenCurrentDatabase(os.path.abspath(sys.argv[1]))
+project.Application.OpenCurrentDatabase(os.path.abspath(args.project_path))
 
 currentProject = project.Application.CurrentProject
 currentData = project.Application.CurrentData
 
-# exportPath = sys.argv[2]
-exportPath = os.path.abspath("exports")
+exportPath = os.path.abspath(args.export_path)
 try:
    os.makedirs(exportPath)
 except FileExistsError:
@@ -128,7 +141,7 @@ def decode_sketchy_utf16(raw_bytes):
     return s
 
 def dumpTable(tableName):
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + os.path.abspath(sys.argv[1]) + ';')
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + os.path.abspath(args.project_path) + ';')
 
     # Converter added due to decode error - https://github.com/mkleehammer/pyodbc/issues/328#issuecomment-419655266
     conn.add_output_converter(pyodbc.SQL_WVARCHAR, decode_sketchy_utf16)
@@ -157,7 +170,7 @@ def dumpNavPane():
     project.Application.ExportNavigationPane(os.path.join(exportPath, "nav_pane.xml"))
 
 def dumpTables():
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + os.path.abspath(sys.argv[1]) + ';')
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + os.path.abspath(args.project_path) + ';')
 
     cursor = conn.cursor()
     # tables starting with "_" not included because they were causing errors and they don't have a csv file counterpart?
@@ -220,7 +233,8 @@ def loadModules():
 def loadNavPane():
     project.Application.ImportNavigationPane(os.path.join(exportPath, "nav_pane.xml"))
 
-match sys.argv[2]:
+
+match args.command:
     case "dump-all":
         dumpAllForms()
         dumpAllModules()
@@ -228,15 +242,15 @@ match sys.argv[2]:
         dumpTables()
         
     case "dump-form":
-        dumpForm(sys.argv[4])
+        dumpForm(args.element_name)
     case "load-form":
-        loadForm(sys.argv[4])
+        loadForm(args.element_name)
     case "dump-module":
-        dumpModule(sys.argv[4])
+        dumpModule(args.element_name)
     case "dump-query":
-        dumpQuery(sys.argv[4])
+        dumpQuery(args.element_name)
     case "dump-table":
-        dumpTable(sys.argv[4])
+        dumpTable(args.element_name)
     case "dump-nav-pane":
         dumpNavPane()
 
