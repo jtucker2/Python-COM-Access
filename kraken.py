@@ -31,7 +31,9 @@ exportPath = os.path.abspath(args.export_path)
 try:
    os.makedirs(exportPath)
 except FileExistsError:
-   pass
+   if len(os.listdir(exportPath)) != 0:
+       print("Error - export path already contains files")
+       quit()
 
 def removExtension(fileName):
     return fileName.split(".")[0]
