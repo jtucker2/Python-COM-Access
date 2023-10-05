@@ -31,13 +31,14 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 1. Get the domain model editor Access project (`DomainModeller - vX-X-X - Empty.accdb`) from sharepoint
 1. Dump the access project
 	
-	(set the export path to a directory not containing kraken.py)
 	```
-	python kraken.py <access_project_file_path> <export_path> dump-all
+	python kraken.py dump-all <access_project_file_path>
 	```
 	Keep access in view and press enter any time a pop-up window appears
 
-	The specified export folder should be populated with .sql, .frm and .bas files
+	If no export path is specified, one will be created in Kraken directory
+
+	The export folder should be populated with .sql, .frm and .bas files
 1. Get the CSVs for the domain model by cloning https://github.com/Spyderisk/domain-network
 1. Load csv data
 	```
@@ -66,17 +67,23 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 1. Run the load command and give the directory of the empty access project
 	
 	```
-	python kraken.py <access_project_file_path> <export_path> load-all
+	python kraken.py load-all <access_project_file_path>
 	```
+	If no export path is specified, it will be assumed there is an export folder in the Kraken directory
 
 # All commands
 ```
-python kraken.py <project_path> <export_path>
-	dump-form <form_name>
-	load-form <form_name>
-	dump-module <module_name>
-	dump-query <query_name>
-	dump-table <table_name>
+python kraken.py [-h] [-export_path EXPORT_PATH] [-element_name ELEMENT_NAME] command project_path
+
+command options:
+	dump-all
+	load-all
+
+	dump-form -element_name ELEMENT_NAME
+	load-form -element_name ELEMENT_NAME
+	dump-module -element_name ELEMENT_NAME
+	dump-query -element_name ELEMENT_NAME
+	dump-table -element_name ELEMENT_NAME
 
 	dump-forms
 	load-forms
@@ -86,9 +93,6 @@ python kraken.py <project_path> <export_path>
 
 	load-tables
 	load-queries
-
-	dump-all
-	load-all
 ```
 
 # Info
