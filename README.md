@@ -33,6 +33,9 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 	
 	```
 	python kraken.py dump-all <access_project_file_path>
+
+	e.g. python kraken.py dump-all "DomainModeller - v10-2-2 - Empty.accdb"
+	(Here the project is in the Kraken directory)
 	```
 	Keep access in view and press enter any time a pop-up window appears
 
@@ -45,6 +48,8 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 1. Load csv data
 	```
 	python csv_loader.py <csv_path>
+
+	e.g. python csv_loader.py "C:\Spyderisk\domain-network\csv"
 	```
 1. Dump the generated sqlite database (DomainModel.db)
 	1. Open the database
@@ -70,6 +75,8 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 	
 	```
 	python kraken.py load-all <access_project_file_path>
+
+	e.g. python kraken.py load-all "E:\Documents\Database1.accdb"
 	```
 	If no export path is specified, it will be assumed there is an export folder in the Kraken directory
 
