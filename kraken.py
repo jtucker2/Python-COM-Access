@@ -4,25 +4,6 @@ import traceback
 import win32com.client as win32
 import pyodbc
 import sqlite3
-import pandas as pd
-
-def loadCSV(path, tableName):
-    con = sqlite3.connect("DomainModel.db", isolation_level=None)
-    csv = pd.read_csv(path)
-    csv.to_sql(tableName, con, if_exists='append', index = False)
-
-def loadCSVs(path):
-    files = os.listdir(path)
-    count = 1
-    for file in files:
-        print("{}/{} tables".format(count, len(files)), end= "\r")
-        loadCSV(os.path.join(path, file), file.split(".")[0])
-        count += 1
-    print()
-
-if sys.argv[1] == "load-csvs":
-    loadCSVs(sys.argv[2])
-    quit()
 
 project = win32.gencache.EnsureDispatch('Access.Application')
 project.Application.OpenCurrentDatabase(sys.argv[1])
