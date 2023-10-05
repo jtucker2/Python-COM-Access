@@ -39,6 +39,8 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 	If no export path is specified, one will be created in Kraken directory
 
 	The export folder should be populated with .sql, .frm and .bas files
+
+	A DomainModel.db file will be created in the Kraken directory
 1. Get the CSVs for the domain model by cloning https://github.com/Spyderisk/domain-network
 1. Load csv data
 	```
