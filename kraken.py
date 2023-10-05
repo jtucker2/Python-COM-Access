@@ -1,4 +1,3 @@
-import sys
 import os
 import traceback
 import win32com.client as win32
@@ -7,7 +6,9 @@ import sqlite3
 import argparse
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    description="Kraken is a tool to export elements of a Microsoft Access project in plain text. The exports can then be reimported."
+)
 parser.add_argument('command')
 parser.add_argument('project_path')
 parser.add_argument(
@@ -32,6 +33,7 @@ try:
    os.makedirs(exportPath)
 except FileExistsError:
    pass
+
 
 def removExtension(fileName):
     return fileName.split(".")[0]
