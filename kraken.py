@@ -4,14 +4,21 @@ import traceback
 import win32com.client as win32
 import pyodbc
 import sqlite3
+from pathlib import Path
 
 project = win32.gencache.EnsureDispatch('Access.Application')
-project.Application.OpenCurrentDatabase(sys.argv[1])
+# project.Application.OpenCurrentDatabase(sys.argv[1])
+project.Application.OpenCurrentDatabase(os.path.abspath(sys.argv[1]))
 
 currentProject = project.Application.CurrentProject
 currentData = project.Application.CurrentData
 
-exportPath = sys.argv[2]
+# exportPath = sys.argv[2]
+exportPath = os.path.abspath("exports")
+try:
+   os.makedirs(exportPath)
+except FileExistsError:
+   pass
 
 def removExtension(fileName):
     return fileName.split(".")[0]
@@ -121,7 +128,7 @@ def decode_sketchy_utf16(raw_bytes):
     return s
 
 def dumpTable(tableName):
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + os.path.abspath(sys.argv[1]) + ';')
 
     # Converter added due to decode error - https://github.com/mkleehammer/pyodbc/issues/328#issuecomment-419655266
     conn.add_output_converter(pyodbc.SQL_WVARCHAR, decode_sketchy_utf16)
@@ -150,7 +157,7 @@ def dumpNavPane():
     project.Application.ExportNavigationPane(os.path.join(exportPath, "nav_pane.xml"))
 
 def dumpTables():
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + sys.argv[1] + ';')
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + os.path.abspath(sys.argv[1]) + ';')
 
     cursor = conn.cursor()
     # tables starting with "_" not included because they were causing errors and they don't have a csv file counterpart?
@@ -164,7 +171,7 @@ def dumpTables():
     print()
 
 def loadTables():
-    filePath = os.path.join("data.sql")
+    filePath = "data.sql"
     with open(filePath) as file:
         lines = len(file.readlines())
 
@@ -213,7 +220,7 @@ def loadModules():
 def loadNavPane():
     project.Application.ImportNavigationPane(os.path.join(exportPath, "nav_pane.xml"))
 
-match sys.argv[3]:
+match sys.argv[2]:
     case "dump-all":
         dumpAllForms()
         dumpAllModules()
