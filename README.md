@@ -41,7 +41,7 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 1. Get the CSVs for the domain model by cloning https://github.com/Spyderisk/domain-network
 1. Load csv data
 	```
-	python kraken.py load-csvs <csv_path>
+	python csv_loader.py <csv_path>
 	```
 1. Dump the generated sqlite database (DomainModel.db)
 	1. Open the database
@@ -89,8 +89,6 @@ python kraken.py <project_path> <export_path>
 
 	dump-all
 	load-all
-	
-python kraken.py load-csvs <csvs_directory>
 ```
 
 # Info
