@@ -4,6 +4,12 @@ Kraken is a tool to export elements of a Microsoft Access project in plain text.
 
 # Running the tool
 
+## Pre-requisits
+- Windows
+- Microsoft Access
+- Python 3.10
+- sqlite-tools-win32-x86
+
 ## Installing SQLite
 1. Go to https://www.sqlite.org/download.html and donwload the sqlite tools for Windows.
 1. Extract the files into a new folder
