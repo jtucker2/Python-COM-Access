@@ -1,5 +1,7 @@
 # Incomplete features and known bugs
 - Navigation pane groups can be imported but don't have objects assigned to them.
+- The program will sometimes (seemingly after a Windows update) stop working with a `has no attribute 'CLSIDToClassMap'` error. To fix this delete the folder at `C:\Users\<my username>\AppData\Local\Temp\gen_py` (https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com)
+
 
 # Unsolved problems and mysteries
 ## Navigation pane groups
