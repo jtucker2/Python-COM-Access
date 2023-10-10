@@ -10,4 +10,9 @@ Navigation pane categories and groups can be exported into an XML file. However 
 When comparing the exports after multiple exports/import cycles there are large numbers of differences between the files, however no important information seems to have changed. SQL queries have minor changes that don't affect their meaning, such as the order of AND segments of the queries being swapped. Forms have GUIDs of objects changed and sections of large numbers changed. However, nothing seems to change in terms of using the forms in Access itself after however many exports/imports.
 
 ## ProjectVariants form not exporting
-ProjectVariants is the only form that doesn't get exported due to an error: "The record source 'ProjectVariants' specified on this form or report does not exist". This error also happens when trying to open the form in Access so it seems this is a problem with the Access project.
+ProjectVariants is the only form that doesn't get exported due to an error: `The record source 'ProjectVariants' specified on this form or report does not exist`
+
+This error also happens when trying to open the form in Access so it seems this is a problem with the Access project.
+
+## Queries not being exported
+A number of queries are not exported due to an error: `The SQL statement could not be executed because it contains ambiguous outer joins. To force one of the joins to be performed first, create a separate query that performs the first join and then include that query in your SQL statement.`
