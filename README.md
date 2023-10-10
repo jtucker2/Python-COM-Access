@@ -132,3 +132,9 @@ To change the type of data that is returned change the `(MsysObjects.Type)=1` pa
 | Reports | -32764 |
 | Macros | -32766 |
 | Modules | -32761 |
+
+# Microsoft Documentation
+The documentation on the commands used in Kraken can be found here:
+- https://learn.microsoft.com/en-us/office/client-developer/access/access-home
+
+This documents the commands to be used in VBA, however using the Windows COM API they could be used in Python with some trial-and-error.
